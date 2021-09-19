@@ -17,13 +17,14 @@ public class Enemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerTransform = GameObject.FindWithTag("Player").transform;
+        if(GameObject.FindWithTag("Player"))
+            playerTransform = GameObject.FindWithTag("Player").transform;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Vector3.Distance(playerTransform.position, transform.position) <= maxChaseDistance)
+        if(playerTransform && Vector3.Distance(playerTransform.position, transform.position) <= maxChaseDistance)
         {
             currentState = State.Chase;
         }

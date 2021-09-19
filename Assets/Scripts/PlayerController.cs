@@ -84,41 +84,7 @@ public class PlayerController : MonoBehaviour
 
         moveDirection = Vector3.zero;
 
-        if (camType == CameraType.Orthographic)
-        {
-            Camera.main.orthographic = true;
-        }
-        else
-        {
-            Camera.main.orthographic = false;
-        }
 
-        switch (view)
-        {
-            case CameraView.Isometric:
-                Camera.main.transform.eulerAngles = new Vector3(Mathf.Atan(1 / Mathf.Sqrt(2)) * Mathf.PI, 45f, 0);
-                break;
-
-            case CameraView.Dimetric:
-                Camera.main.transform.eulerAngles = new Vector3(30f, 45f, 0);
-                break;
-
-            case CameraView.A45Degrees:
-                Camera.main.transform.eulerAngles = new Vector3(45f, 45f, 0);
-                break;
-
-            case CameraView.A60Degrees:
-                Camera.main.transform.eulerAngles = new Vector3(60f, 45f, 0);
-                break;
-
-            case CameraView.Override:
-                Camera.main.transform.eulerAngles = cameraViewAngleOverrideValue;
-                break;
-
-            default:
-                Camera.main.transform.eulerAngles = new Vector3(Mathf.Atan(1 / Mathf.Sqrt(2)) * Mathf.PI, 45, 0);
-                break;
-        }
 
     }
     private void Update()
@@ -156,12 +122,7 @@ public class PlayerController : MonoBehaviour
 
         lookDirection = lookVector;
 
-        /// this uses quaternions to rotate the player so their vector3.forwards is the same direction as the vector, as well as shifts vector to be positioned relative to the camera
-        /// rather than worldspace
-        if (Camera.main.orthographic)
-            transform.rotation = Quaternion.LookRotation(lookVector) * Quaternion.FromToRotation(Vector3.right, Camera.main.transform.right);
-        else
-            transform.LookAt(new Vector3(lookVector.x, transform.position.y, lookVector.z));
+       
 
         // this is in update because I'd rather not have an unresponsive jump
         if (Input.GetButtonDown("Jump") && cc.isGrounded)
@@ -174,12 +135,7 @@ public class PlayerController : MonoBehaviour
         }
         switch (type)
         {
-            case ControllerType.SimpleMove:
-
-                cc.SimpleMove(transform.forward * (Input.GetAxis("Vertical") * moveVars.playerSpeed));
-
-                break;
-
+            
             case ControllerType.Move:
                 if (cc.isGrounded)
                 {
@@ -238,8 +194,7 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         cc.Move(moveDirection * Time.fixedDeltaTime);
-        if (cameraSmoothing)
-            CameraMove();
+        
         if (shoot)
         {
             RaycastHit hit;
@@ -262,8 +217,7 @@ public class PlayerController : MonoBehaviour
     // If you're wondering why this is FixedUpdate, it's because I don't want my player to jitter.
     void LateUpdate()
     {
-        if (!cameraSmoothing)
-            CameraMove();
+      
     }
 
     void CameraMove()
